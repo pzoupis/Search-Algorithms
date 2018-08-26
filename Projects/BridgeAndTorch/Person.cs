@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BridgeAndTorch
+﻿namespace BridgeAndTorch
 {
     public class Person
     {
@@ -11,6 +9,11 @@ namespace BridgeAndTorch
         {
             Name = name;
             Speed = speed;
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {Name}, Speed: {Speed}";
         }
     }
 }
