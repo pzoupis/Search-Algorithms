@@ -6,14 +6,16 @@ namespace BreadthFirstSearch
 {
     public class BreadthFirstSearch<T> where T : new()
     {
-        private List<Node<T>> Frontier { get; set; }
-        private List<Node<T>> VisitedNodes { get; set; }
+        public List<Node<T>> Frontier { get; set; }
+        public List<Node<T>> VisitedNodes { get; set; }
+        public bool IsExpandVisitedNodesEnabled { get; set; }
 
         private readonly ISearchProblem<T> _searchProblem;
 
-        public BreadthFirstSearch(ISearchProblem<T> searchProblem)
+        public BreadthFirstSearch(ISearchProblem<T> searchProblem, bool expandVisitedNodes = true)
         {
             _searchProblem = searchProblem;
+            IsExpandVisitedNodesEnabled = expandVisitedNodes;
             MakeQueue(searchProblem.GetInitialNode());
         }
 
@@ -22,19 +24,28 @@ namespace BreadthFirstSearch
             var solutionNodes = new List<Node<T>>();
             VisitedNodes = new List<Node<T>>();
             Node<T> tempNode = null;
-
+            var goalNodeFound = false;
             while (!IsEmpty())
             {
                 tempNode = RemoveFront();
                 if (_searchProblem.IsGoalNode(tempNode))
                 {
+                    goalNodeFound = true;
                     Console.WriteLine("The goal node is found");
                     break;
                 }
 
-                if (IsNodeVisited(tempNode)) continue;
+                if (IsExpandVisitedNodesEnabled)
+                {
+                    if (IsNodeVisited(tempNode)) continue;
+                }
                 AddNodes(_searchProblem.ExpandNode(tempNode));
                 VisitedNodes.Add(tempNode);
+            }
+
+            if (!goalNodeFound)
+            {
+                Console.WriteLine("Goal node was not found");
             }
 
             if (tempNode != null)
